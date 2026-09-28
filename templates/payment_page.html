@@ -1,0 +1,23 @@
+<style>html{direction:rtl}body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#00c6ff,#7b2ff7);min-height:100vh;margin:0;padding:40px 15px;color:#222;text-align:center}body>*{box-sizing:border-box}h1{color:#5b21b6;font-size:34px}p{font-size:18px}img{background:#fff;padding:12px;border-radius:18px;box-shadow:0 8px 25px #0004}button{background:#ff4d6d;color:#fff;border:0;border-radius:10px;padding:12px 22px;font-size:16px;font-weight:bold;cursor:pointer;margin:6px}input{padding:12px;border:2px solid #7b2ff7;border-radius:10px;font-size:16px;margin:6px}#r{border:2px solid #7b2ff7;background:#fff;border-radius:16px;padding:18px;margin:20px auto;max-width:500px;box-shadow:0 8px 24px #0003;font-size:17px;font-weight:bold;line-height:1.6;min-height:24px}</style>
+<h1>File Organizer</h1><div style="font-size:22px;font-weight:bold;margin-top:-12px;margin-bottom:12px">منظم الملفات</div>
+<p>License: 12 USDT</p>
+<p>Network: TRC-20</p>
+<p>Send USDT to:</p>
+<p><b>TJMFEyA6QbbkHtNH52NsCPcPVA9AZpBWoq</b></p>
+<p><img src="/static/wallet_qr.png" width="220"></p>
+<button onclick="copyAddress()">Copy Address<br><span style='font-size:14px'>نسخ العنوان</span></button>
+<button onclick="buy()">إنشاء طلب<br><span style='font-size:14px'>Create Order</span></button>
+<input id="o" placeholder="Order ID">
+<button onclick="checkPayment()">فحص الدفع<br><span style='font-size:14px'>Check Payment</span></button>
+<pre id="r"></pre>
+<script>
+function copyAddress(){let b=event.target;navigator.clipboard.writeText("TJMFEyA6QbbkHtNH52NsCPcPVA9AZpBWoq");b.textContent="Copied ✓";setTimeout(()=>b.textContent="Copy Address",1500);}
+async function buy(){
+  let r=await fetch("/create-order",{method:"POST"});
+  let x=await r.json();
+  document.getElementById("r").textContent="Order created: "+x.order_id+" | Status: Waiting for payment";
+  document.getElementById("o").value=x.order_id;
+}
+async function checkPayment(){let id=document.getElementById("o").value;if(!id){document.getElementById("r").textContent="Please create an order first.";return;}let r=await fetch("/check-payment/"+id);let x=await r.json();if(x.status==="PAID"){let box=document.getElementById("r");box.innerHTML="Payment Status: Payment received ✓<br><br><b>License Key:</b><br>";let key=document.createElement("span");key.textContent=x.license_key;box.appendChild(key);box.appendChild(document.createElement("br"));let btn=document.createElement("button");btn.textContent="Copy License Key / نسخ مفتاح الترخيص";btn.onclick=()=>navigator.clipboard.writeText(x.license_key);box.appendChild(btn);}else{document.getElementById("r").textContent="Waiting for payment";}}
+</script>
+<p><a href="/">العودة إلى الصفحة الرئيسية</a></p>
